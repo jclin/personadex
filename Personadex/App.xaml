@@ -1,0 +1,14 @@
+<Application
+    x:Class="Personadex.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:vm="using:Personadex.ViewModel"
+    mc:Ignorable="d">
+    <Application.Resources>
+        <vm:ViewModelLocator
+            x:Key="ViewModelLocator"
+            d:IsDataSource="True" />
+    </Application.Resources>
+</Application>
