@@ -43,6 +43,7 @@ namespace Personadex.ViewModel
             }
             else
             {
+                getPersonasTask.Start();
                 personas = await getPersonasTask;
             }
 

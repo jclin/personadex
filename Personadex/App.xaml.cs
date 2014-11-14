@@ -11,7 +11,7 @@ namespace Personadex
 {
     public sealed partial class App
     {
-        private TransitionCollection transitions;
+        private TransitionCollection _transitions;
 
         public App()
         {
@@ -31,7 +31,7 @@ namespace Personadex
             var rootFrame = Window.Current.Content as Frame;
             if (rootFrame == null)
             {
-                rootFrame = new Frame {CacheSize = 10};
+                rootFrame = new Frame { CacheSize = 10 };
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
@@ -46,17 +46,17 @@ namespace Personadex
                 // Removes the turnstile navigation for startup.
                 if (rootFrame.ContentTransitions != null)
                 {
-                    transitions = new TransitionCollection();
+                    _transitions = new TransitionCollection();
                     foreach (Transition c in rootFrame.ContentTransitions)
                     {
-                        transitions.Add(c);
+                        _transitions.Add(c);
                     }
                 }
 
                 rootFrame.ContentTransitions = null;
                 rootFrame.Navigated += RootFrame_FirstNavigated;
 
-                if (!rootFrame.Navigate(typeof (MainPage), e.Arguments))
+                if (!rootFrame.Navigate(typeof (View.MainPage), e.Arguments))
                 {
                     throw new Exception("Failed to create initial page");
                 }
@@ -69,8 +69,9 @@ namespace Personadex
         private void RootFrame_FirstNavigated(object sender, NavigationEventArgs e)
         {
             var rootFrame = sender as Frame;
-            rootFrame.ContentTransitions = transitions ?? new TransitionCollection {new NavigationThemeTransition()};
             rootFrame.Navigated -= RootFrame_FirstNavigated;
+
+            rootFrame.ContentTransitions = _transitions ?? new TransitionCollection {new NavigationThemeTransition()};
         }
 
         private void OnSuspending(object sender, SuspendingEventArgs e)

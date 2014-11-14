@@ -1,0 +1,79 @@
+﻿<Page
+    x:Class="Personadex.View.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    DataContext="{Binding
+        MainViewModel,
+        Source={StaticResource ViewModelLocator}}"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <Style
+            x:Key="ListViewItemStyle"
+            TargetType="ListViewItem">
+            <Setter
+                Property="HorizontalContentAlignment"
+                Value="Stretch" />
+            <Setter
+                Property="VerticalContentAlignment"
+                Value="Stretch" />
+        </Style>
+
+        <DataTemplate x:Key="PersonasHeaderTemplate">
+            <TextBlock
+                Margin="10, 0, 0, 10"
+                Style="{ThemeResource HeaderTextBlockStyle}"
+                Text="Personas" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="PersonaItemTemplate">
+            <Grid Margin="0, 10, 0, 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Rectangle
+                    x:Name="ImagePlaceholder"
+                    Grid.Column="0"
+                    Height="41"
+                    Width="41"
+                    Margin="10, 0, 10, 0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Fill="OrangeRed" />
+                <StackPanel
+                    Grid.Column="1"
+                    VerticalAlignment="Top"
+                    Orientation="Vertical">
+                    <TextBlock
+                        x:Name="NameTextBlock"
+                        MaxLines="1"
+                        Style="{ThemeResource ListViewItemTextBlockStyle}"
+                        Text="{Binding Name}"
+                        TextLineBounds="Tight"
+                        TextTrimming="CharacterEllipsis" />
+                    <TextBlock
+                        x:Name="ArcanaTextBlock"
+                        Margin="0, 10, 0, 0"
+                        MaxLines="1"
+                        OpticalMarginAlignment="TrimSideBearings"
+                        Style="{ThemeResource ListViewItemSubheaderTextBlockStyle}"
+                        Text="{Binding Arcana}"
+                        TextLineBounds="Tight" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+    <ListView
+        Margin="10"
+        ContainerContentChanging="OnListViewContentContainerChanging"
+        HeaderTemplate="{StaticResource PersonasHeaderTemplate}"
+        ItemContainerStyle="{StaticResource ListViewItemStyle}"
+        ItemTemplate="{StaticResource PersonaItemTemplate}"
+        ItemsSource="{Binding PersonaViewModels}"
+        SelectionMode="Single"
+        ShowsScrollingPlaceholders="True" />
+</Page>
