@@ -4,9 +4,8 @@ namespace Personadex.Model
 {
     internal sealed class DesignerPersonaService : IPersonaService
     {
-        public IReadOnlyList<Persona> GetPersonas()
-        {
-            return new List<Persona>
+        private readonly IReadOnlyList<Persona> _samplePersonas =
+            new List<Persona>
             {
                 new Persona
                 {
@@ -83,6 +82,20 @@ namespace Personadex.Model
                     Skills      = "Megidolaon,Victory Cry, Angelic Grace, Mind Charge, Agidyne(92), Bufudyne(93), Garudyne(94), Ziodyne(95), Fire Amp(96), Ice Amp(97) Elec Amp(98), Wind Amp(99)"
                 }
             };
+
+        public long GetPersonaCount()
+        {
+            return _samplePersonas.Count;
+        }
+
+        public IReadOnlyList<Persona> GetPersonas()
+        {
+            return _samplePersonas;
+        }
+
+        public Persona GetPersona(int personaId)
+        {
+            return _samplePersonas[personaId - 1];
         }
     }
 }

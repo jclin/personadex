@@ -60,11 +60,15 @@ namespace Personadex.View
                 throw new InvalidOperationException("This is not phase 1");
             }
 
-            var rootGrid = (Grid)(args.ItemContainer.ContentTemplateRoot);
+            var personaViewModel  = args.Item as PersonaViewModel;
+            if (personaViewModel != null)
+            {
+                var rootGrid = (Grid)(args.ItemContainer.ContentTemplateRoot);
 
-            var nameTextBlock = (TextBlock)rootGrid.FindName("NameTextBlock");
-            nameTextBlock.Text = ((PersonaViewModel) args.Item).Name;
-            nameTextBlock.Opacity = 1;
+                var nameTextBlock = (TextBlock)rootGrid.FindName("NameTextBlock");
+                nameTextBlock.Text = personaViewModel.Name;
+                nameTextBlock.Opacity = 1;
+            }
 
             args.RegisterUpdateCallback(OnListViewShowArcanaTextBlockPhase);
         }
@@ -76,6 +80,12 @@ namespace Personadex.View
             if (args.Phase != 2)
             {
                 throw new InvalidOperationException("This is not phase 2");
+            }
+
+            var personaViewModel = args.Item as PersonaViewModel;
+            if (personaViewModel == null)
+            {
+                return;
             }
 
             var rootGrid = (Grid)(args.ItemContainer.ContentTemplateRoot);
