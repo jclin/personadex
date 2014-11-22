@@ -74,6 +74,7 @@
         ItemContainerStyle="{StaticResource ListViewItemStyle}"
         ItemTemplate="{StaticResource PersonaItemTemplate}"
         ItemsSource="{Binding PersonaViewModels}"
+        SelectedItem="{Binding SelectedPersonaViewModel, Mode=TwoWay}"
         SelectionMode="Single"
         ShowsScrollingPlaceholders="True" />
 </Page>
