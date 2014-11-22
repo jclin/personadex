@@ -2,6 +2,7 @@ using GalaSoft.MvvmLight;
 using Personadex.Collection;
 using Personadex.Model;
 using Personadex.Navigation;
+using Personadex.View;
 
 namespace Personadex.ViewModel
 {
@@ -16,6 +17,28 @@ namespace Personadex.ViewModel
             get
             {
                 return _personaViewModels;
+            }
+        }
+
+        private PersonaViewModel _selectedPersonaViewModel;
+        public PersonaViewModel SelectedPersonaViewModel
+        {
+            get
+            {
+                if (IsInDesignMode)
+                {
+                    return (PersonaViewModel)_personaViewModels[1];
+                }
+
+                return _selectedPersonaViewModel;
+            }
+
+            set
+            {
+                if (Set("SelectedPersonaViewModel", ref _selectedPersonaViewModel, value) && value != null)
+                {
+                    _pageNavigator.Navigate<PersonaDetailsPage>();
+                }
             }
         }
 
