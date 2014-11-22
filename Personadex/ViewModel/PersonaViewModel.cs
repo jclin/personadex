@@ -27,7 +27,7 @@ namespace Personadex.ViewModel
         {
             get
             {
-                return _persona.Physical;
+                return GetAffinityFriendlyText(_persona.Physical);
             }
         }
 
@@ -35,7 +35,7 @@ namespace Personadex.ViewModel
         {
             get
             {
-                return _persona.Fire;
+                return GetAffinityFriendlyText(_persona.Fire);
             }
         }
 
@@ -43,7 +43,7 @@ namespace Personadex.ViewModel
         {
             get
             {
-                return _persona.Ice;
+                return GetAffinityFriendlyText(_persona.Ice);
             }
         }
 
@@ -51,7 +51,7 @@ namespace Personadex.ViewModel
         {
             get
             {
-                return _persona.Electricity;
+                return GetAffinityFriendlyText(_persona.Electricity);
             }
         }
 
@@ -59,7 +59,7 @@ namespace Personadex.ViewModel
         {
             get
             {
-                return _persona.Wind;
+                return GetAffinityFriendlyText(_persona.Wind);
             }
         }
 
@@ -67,7 +67,7 @@ namespace Personadex.ViewModel
         {
             get
             {
-                return _persona.Light;
+                return GetAffinityFriendlyText(_persona.Light);
             }
         }
 
@@ -75,7 +75,7 @@ namespace Personadex.ViewModel
         {
             get
             {
-                return _persona.Dark;
+                return GetAffinityFriendlyText(_persona.Dark);
             }
         }
 
@@ -98,6 +98,11 @@ namespace Personadex.ViewModel
         public PersonaViewModel(Persona persona)
         {
             _persona = persona;
+        }
+
+        private static string GetAffinityFriendlyText(string affinity)
+        {
+            return string.IsNullOrEmpty(affinity) ? "No value" : affinity;
         }
     }
 }
