@@ -24,6 +24,21 @@ namespace Personadex.Model
 
                 new Persona
                 {
+                    Name        = "Ose",
+                    Level       = 3,
+                    Physical    = string.Empty,
+                    Fire        = string.Empty,
+                    Ice         = string.Empty,
+                    Electricity = "Str",
+                    Wind        = "Wk",
+                    Light       = string.Empty,
+                    Dark        = "Nul",
+                    Arcana      = "Fool",
+                    Skills      = "Zio,Cleave, Rakukaja Rakunda(3) Tarukaja(5)"
+                },
+
+                new Persona
+                {
                     Name        = "Yomotsu-shikome",
                     Level       = 7,
                     Physical    = string.Empty,

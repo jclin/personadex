@@ -21,13 +21,6 @@
                 Value="Stretch" />
         </Style>
 
-        <DataTemplate x:Key="PersonasHeaderTemplate">
-            <TextBlock
-                Margin="10, 0, 0, 10"
-                Style="{ThemeResource HeaderTextBlockStyle}"
-                Text="Personas" />
-        </DataTemplate>
-
         <DataTemplate x:Key="PersonaItemTemplate">
             <Grid Margin="0, 10, 0, 10">
                 <Grid.ColumnDefinitions>
@@ -39,7 +32,7 @@
                     Grid.Column="0"
                     Height="41"
                     Width="41"
-                    Margin="10, 0, 10, 0"
+                    Margin="0, 0, 10, 0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
                     Fill="OrangeRed" />
@@ -67,14 +60,38 @@
         </DataTemplate>
     </Page.Resources>
 
-    <ListView
-        Margin="10"
-        ContainerContentChanging="OnListViewContentContainerChanging"
-        HeaderTemplate="{StaticResource PersonasHeaderTemplate}"
-        ItemContainerStyle="{StaticResource ListViewItemStyle}"
-        ItemTemplate="{StaticResource PersonaItemTemplate}"
-        ItemsSource="{Binding PersonaViewModels}"
-        SelectedItem="{Binding SelectedPersonaViewModel, Mode=TwoWay}"
-        SelectionMode="Single"
-        ShowsScrollingPlaceholders="True" />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel
+            Grid.Row="0"
+            Margin="19, 0, 19, 10">
+            <TextBlock
+                Margin="0, 12, 0, 10"
+                Style="{ThemeResource TitleTextBlockStyle}"
+                Text="Personadex" />
+
+            <TextBlock
+                TextLineBounds="Tight"
+                Style="{ThemeResource HeaderTextBlockStyle}"
+                Text="Personas" />
+        </StackPanel>
+
+        <ListView
+            Grid.Row="1"
+            Margin="19, 10, 10, 10"
+            ContainerContentChanging="OnListViewContentContainerChanging"
+            ItemContainerStyle="{StaticResource ListViewItemStyle}"
+            ItemTemplate="{StaticResource PersonaItemTemplate}"
+            ItemsSource="{Binding PersonaViewModels}"
+            SelectedItem="{Binding
+                SelectedPersonaViewModel,
+                Mode=TwoWay}"
+            SelectionMode="Single"
+            ShowsScrollingPlaceholders="True" />
+
+    </Grid>
 </Page>
