@@ -37,7 +37,9 @@
                 Style="{ThemeResource TitleTextBlockStyle}"
                 Text="Personadex" />
 
-            <Grid x:Name="ImageAndNameContentArea">
+            <Grid
+                x:Name="ImageAndNameContentArea"
+                Height="70">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
@@ -45,26 +47,29 @@
                 <Rectangle
                     x:Name="ImagePlaceholder"
                     Grid.Column="0"
-                    Height="67"
-                    Width="67"
+                    Height="70"
+                    Width="70"
                     Margin="0, 0, 10, 0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
                     Fill="OrangeRed" />
-                <StackPanel
+                <Grid
                     Grid.Column="1"
-                    VerticalAlignment="Top"
-                    Orientation="Vertical">
+                    VerticalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
                     <Viewbox
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
+                        Grid.Row="0"
+                        Margin="0, 0, 0, 9"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
                         Stretch="Uniform">
                         <TextBlock
-                            Margin="0, 0, 0, 10"
-                            VerticalAlignment="Top"
                             x:Name="PersonaNameTextBlock"
+                            VerticalAlignment="Top"
                             FontWeight="Bold"
-                            CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"
                             MaxLines="1"
                             OpticalMarginAlignment="TrimSideBearings"
                             Style="{ThemeResource HeaderTextBlockStyle}"
@@ -73,6 +78,7 @@
                     </Viewbox>
                     <TextBlock
                         x:Name="ArcanaTextBlock"
+                        Grid.Row="1"
                         Margin="0, 10, 0, 0"
                         VerticalAlignment="Bottom"
                         Foreground="{ThemeResource ListViewGroupHeaderPressedForegroundThemeBrush}"
@@ -81,14 +87,13 @@
                         Style="{ThemeResource SubheaderTextBlockStyle}"
                         Text="{Binding Arcana}"
                         TextLineBounds="Tight" />
-                </StackPanel>
+                </Grid>
             </Grid>
-
         </StackPanel>
 
         <ScrollViewer
             Grid.Row="1"
-            Margin="19, 10, 19, 0">
+            Margin="19, 10, 19, 10">
             <StackPanel>
                 <TextBlock
                     Margin="0, 0, 0, 0"

@@ -237,6 +237,11 @@ namespace Personadex.Collection
 
         private static void AssertIsT(object item)
         {
+            if (item == null)
+            {
+                return;
+            }
+
             Debug.Assert(item is T, string.Format("Error: expected an instance of {0}", typeof(T)));
         }
 

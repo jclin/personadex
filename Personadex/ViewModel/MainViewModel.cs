@@ -1,3 +1,4 @@
+using System;
 using GalaSoft.MvvmLight;
 using Personadex.Collection;
 using Personadex.Model;
@@ -8,7 +9,6 @@ namespace Personadex.ViewModel
 {
     internal sealed class MainViewModel : ViewModelBase
     {
-        private readonly IPersonaService _personaService;
         private readonly IPageNavigator _pageNavigator;
 
         private readonly ObservableVector<PersonaViewModel> _personaViewModels;
@@ -35,18 +35,36 @@ namespace Personadex.ViewModel
 
             set
             {
-                if (Set("SelectedPersonaViewModel", ref _selectedPersonaViewModel, value) && value != null)
+                if (!Set(ref _selectedPersonaViewModel, value))
                 {
-                    _pageNavigator.Navigate<PersonaDetailsPage>();
+                    return;
                 }
+
+                if (_selectedPersonaViewModel == null)
+                {
+                    return;
+                }
+
+                _pageNavigator.Navigate<PersonaDetailsPage>(true);
             }
         }
 
         public MainViewModel(IPersonaService personaService, IPageNavigator pageNavigator)
         {
-            _personaService     = personaService;
-            _pageNavigator      = pageNavigator;
-            _personaViewModels  = new ObservableVector<PersonaViewModel>(new PersonaViewModelProvider(personaService), IsInDesignMode);
+            _pageNavigator             = pageNavigator;
+            _pageNavigator.NavigateTo += OnNavigateTo;
+            _personaViewModels         = new ObservableVector<PersonaViewModel>(new PersonaViewModelProvider(personaService), IsInDesignMode);
+        }
+
+        private void OnNavigateTo(object sender, Type pageNavigateToType)
+        {
+            if (pageNavigateToType != typeof (MainPage))
+            {
+                return;
+            }
+
+            // User navigated back to the main page, no persona should be selected
+            SelectedPersonaViewModel = null;
         }
     }
 }

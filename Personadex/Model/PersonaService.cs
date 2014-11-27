@@ -116,7 +116,8 @@ namespace Personadex.Model
                 Wind        = (string)statement["Wind"],
                 Light       = (string)statement["Light"],
                 Dark        = (string)statement["Dark"],
-                Arcana      = (string)statement["Arcana"]
+                Arcana      = (string)statement["Arcana"],
+                Skills      = (string)statement["Skills"]
             };
         }
     }
