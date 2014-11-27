@@ -1,23 +1,64 @@
-﻿using Windows.UI.Xaml;
+﻿using Windows.Phone.UI.Input;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Personadex.Navigation
 {
     internal sealed class PageNavigator : IPageNavigator
     {
-        public bool Navigate<TPage>() where TPage : Page
+        private bool _goBackOnBackPress;
+
+        public event NavigateToDelegate NavigateTo;
+
+        private static Frame Frame
         {
-            return ((Frame) Window.Current.Content).Navigate(typeof (TPage));
+            get
+            {
+                return (Frame) Window.Current.Content;
+            }
         }
 
-        public bool Navigate<TPage>(object paramter) where TPage : Page
+        public PageNavigator()
         {
-            return ((Frame) Window.Current.Content).Navigate(typeof (TPage), paramter);
+            Frame.Navigated             += OnPageNavigated;
+            HardwareButtons.BackPressed += OnHardwareButtonsBackPressed;
+        }
+
+        public bool Navigate<TPage>(bool goBackOnBackPress = false) where TPage : Page
+        {
+            return Navigate<TPage>(null, goBackOnBackPress);
+        }
+
+        public bool Navigate<TPage>(object parameter, bool goBackOnBackPress = false) where TPage : Page
+        {
+            _goBackOnBackPress = goBackOnBackPress;
+
+            return Frame.Navigate(typeof (TPage), parameter);
         }
 
         public void GoBack()
         {
-            ((Frame) Window.Current.Content).GoBack();
+            Frame.GoBack();
+        }
+
+        private void OnHardwareButtonsBackPressed(object sender, BackPressedEventArgs e)
+        {
+            if (!_goBackOnBackPress || !Frame.CanGoBack)
+            {
+                return;
+            }
+
+            GoBack();
+            e.Handled = true;
+        }
+
+        private void OnPageNavigated(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs e)
+        {
+            var navigateToHandler = NavigateTo;
+            if (navigateToHandler != null)
+            {
+                navigateToHandler(this, e.SourcePageType);
+            }
         }
     }
 }

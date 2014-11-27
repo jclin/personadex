@@ -1,12 +1,17 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using System;
+using Windows.UI.Xaml.Controls;
 
 namespace Personadex.Navigation
 {
+    public delegate void NavigateToDelegate(object sender, Type navigateToPageType);
+
     public interface IPageNavigator
     {
-        bool Navigate<TPage>() where TPage : Page;
+        event NavigateToDelegate NavigateTo;
 
-        bool Navigate<TPage>(object paramter) where TPage : Page;
+        bool Navigate<TPage>(bool goBackOnBackPress = false) where TPage : Page;
+
+        bool Navigate<TPage>(object parameter, bool goBackBackPress = false) where TPage : Page;
         
         void GoBack();
     }

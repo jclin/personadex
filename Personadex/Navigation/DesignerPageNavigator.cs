@@ -4,12 +4,14 @@ namespace Personadex.Navigation
 {
     internal sealed class DesignerPageNavigator : IPageNavigator
     {
-        public bool Navigate<TPage>() where TPage : Page
+        public event NavigateToDelegate NavigateTo;
+
+        public bool Navigate<TPage>(bool goBackOnBackPress = false) where TPage : Page
         {
             return true;
         }
 
-        public bool Navigate<TPage>(object paramter) where TPage : Page
+        public bool Navigate<TPage>(object parameter, bool goBackOnBackPress = false) where TPage : Page
         {
             return true;
         }
