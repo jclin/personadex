@@ -91,7 +91,7 @@ namespace Personadex.ViewModel
         {
             get
             {
-                return _persona.Skills;
+                return _persona.Skills.Trim();
             }
         }
 
