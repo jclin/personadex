@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Windows.Foundation.Collections;
 using GalaSoft.MvvmLight;
 
@@ -19,8 +18,7 @@ namespace Personadex.Collection
         private const string NotMutableExceptionMessage =
             "This collection is meant for random access data virtualization and is not externally mutable";
 
-        private readonly bool _forceSynchronousOperations;
-        private readonly IVectorItemProvider<T> _vectorItemProvider;
+        private readonly IBatchedItemProvider<T> _itemProvider;
 
         private readonly object _dictionaryLock;
         private readonly Dictionary<int, T> _internalDictionary;
@@ -34,7 +32,7 @@ namespace Personadex.Collection
                 {
                     if (!_internalDictionary.ContainsKey(index))
                     {
-                        CreateItemAsync(index);
+                        _itemProvider.RetrieveBatchForItemAsync(index);
                     }
                     else
                     {
@@ -61,7 +59,8 @@ namespace Personadex.Collection
                     return _count.Value;
                 }
 
-                GetCountAsync();
+                _itemProvider.GetCountAsync();
+
                 return 0;
             }
 
@@ -82,12 +81,14 @@ namespace Personadex.Collection
             }
         }
 
-        public ObservableVector(IVectorItemProvider<T> vectorItemProvider, bool forceSynchronousOperations = false)
+        public ObservableVector(IBatchedItemProvider<T> vectorItemProvider)
         {
-            _vectorItemProvider              = vectorItemProvider;
-            _forceSynchronousOperations      = forceSynchronousOperations;
+            _itemProvider                    = vectorItemProvider;
             _dictionaryLock                  = new object();
             _internalDictionary              = new Dictionary<int, T>();
+
+            _itemProvider.CountRetrieved     += OnItemCountRetrieved;
+            _itemProvider.ItemBatchRetrieved += OnItemBatchRetrieved;
         }
 
         public IEnumerator<object> GetEnumerator()
@@ -161,58 +162,6 @@ namespace Personadex.Collection
             throw new InvalidOperationException(NotMutableExceptionMessage);
         }
 
-        private void CreateItemAsync(int forIndex)
-        {
-            var createItemTask = new Task<T>(() => _vectorItemProvider.CreateItem(forIndex));
-            createItemTask.ContinueWith(
-                task =>
-                {
-                    lock (_dictionaryLock)
-                    {
-                        _internalDictionary[forIndex] = task.Result;
-                    }
-
-                    Debug.Assert(task.Result != null, "Oops, no item was actually created");
-
-                    NotifyVectorChanged(new VectorChangedEventArgs(CollectionChange.ItemChanged, (uint)forIndex));
-                    NotifyCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, task.Result, null, forIndex));
-                }, 
-                TaskScheduler.FromCurrentSynchronizationContext()
-            );
-
-            if (_forceSynchronousOperations)
-            {
-                createItemTask.RunSynchronously(TaskScheduler.FromCurrentSynchronizationContext());
-            }
-            else
-            {
-                createItemTask.Start(TaskScheduler.FromCurrentSynchronizationContext());
-            }
-        }
-
-        private void GetCountAsync()
-        {
-            var getCountTask = new Task<long>(() => _vectorItemProvider.GetCount());
-            getCountTask.ContinueWith(
-                task =>
-                {
-                    Count = (int)task.Result;
-                    NotifyVectorChanged(new VectorChangedEventArgs(CollectionChange.Reset, 0));
-                    NotifyCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-                },
-                TaskScheduler.FromCurrentSynchronizationContext()
-            );
-
-            if (_forceSynchronousOperations)
-            {
-                getCountTask.RunSynchronously(TaskScheduler.FromCurrentSynchronizationContext());
-            }
-            else
-            {
-                getCountTask.Start(TaskScheduler.FromCurrentSynchronizationContext());
-            }
-        }
-
         private void NotifyVectorChanged(VectorChangedEventArgs args)
         {
             var handler = VectorChanged;
@@ -233,6 +182,29 @@ namespace Personadex.Collection
             }
 
             handler(this, args);
+        }
+
+        private void OnItemCountRetrieved(object sender, long count)
+        {
+            _itemProvider.CountRetrieved -= OnItemCountRetrieved;
+
+            Count = (int)count;
+
+            NotifyVectorChanged(new VectorChangedEventArgs(CollectionChange.Reset, 0));
+            NotifyCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        private void OnItemBatchRetrieved(object sender, BatchRetrievedEventArgs<T> args)
+        {
+            lock (_dictionaryLock)
+            {
+                foreach (var indexItemPair in args.ItemBatch)
+                {
+                    _internalDictionary[indexItemPair.Index] = indexItemPair.Item;
+
+                    NotifyVectorChanged(new VectorChangedEventArgs(CollectionChange.ItemChanged, (uint)indexItemPair.Index));
+                }
+            }
         }
 
         private static void AssertIsT(object item)

@@ -9,6 +9,8 @@ namespace Personadex.ViewModel
 {
     internal sealed class MainViewModel : ViewModelBase
     {
+        private const int PersonasPerBatch = 50;
+
         private readonly IPageNavigator _pageNavigator;
 
         private readonly ObservableVector<PersonaViewModel> _personaViewModels;
@@ -53,7 +55,7 @@ namespace Personadex.ViewModel
         {
             _pageNavigator             = pageNavigator;
             _pageNavigator.NavigateTo += OnNavigateTo;
-            _personaViewModels         = new ObservableVector<PersonaViewModel>(new PersonaViewModelProvider(personaService), IsInDesignMode);
+            _personaViewModels         = new ObservableVector<PersonaViewModel>(new PersonaViewModelProvider(personaService, PersonasPerBatch, IsInDesignMode));
         }
 
         private void OnNavigateTo(object sender, Type pageNavigateToType)

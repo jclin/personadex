@@ -84,8 +84,11 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Collection\IVectorItemProvider.cs" />
+    <Compile Include="Collection\BatchCalculator.cs" />
+    <Compile Include="Collection\IBatchedItemProvider.cs" />
+    <Compile Include="Collection\BatchRetrievedEventArgs.cs" />
     <Compile Include="Collection\ObservableVector.cs" />
+    <Compile Include="Utils\Range.cs" />
     <Compile Include="Model\Arcana.cs" />
     <Compile Include="Model\DesignerPersonaService.cs" />
     <Compile Include="Model\Persona.cs" />
@@ -95,6 +98,7 @@
     <Compile Include="Navigation\PageNavigator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\IPersonaService.cs" />
+    <Compile Include="Utils\IndexItemPair.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\PersonaViewModel.cs" />
     <Compile Include="ViewModel\PersonaViewModelProvider.cs" />

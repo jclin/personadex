@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Personadex.Utils;
 
 namespace Personadex.Model
 {
@@ -103,14 +104,9 @@ namespace Personadex.Model
             return _samplePersonas.Count;
         }
 
-        public IReadOnlyList<Persona> GetPersonas()
+        public IReadOnlyList<Persona> GetPersonas(Range range)
         {
             return _samplePersonas;
-        }
-
-        public Persona GetPersona(int personaId)
-        {
-            return _samplePersonas[personaId - 1];
         }
     }
 }
