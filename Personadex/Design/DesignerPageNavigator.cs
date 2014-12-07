@@ -1,6 +1,7 @@
 ﻿using Windows.UI.Xaml.Controls;
+using Personadex.Navigation;
 
-namespace Personadex.Navigation
+namespace Personadex.Design
 {
     internal sealed class DesignerPageNavigator : IPageNavigator
     {

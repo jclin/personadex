@@ -12,7 +12,6 @@ namespace Personadex.ViewModel
     internal sealed class PersonaViewModelProvider : IBatchedItemProvider<PersonaViewModel>
     {
         private readonly IPersonaService _personaService;
-        private readonly bool _forceSynchronousOperations;
         private readonly long _cachedCount;
 
         private readonly BatchCalculator _batchCalculator;
@@ -22,15 +21,10 @@ namespace Personadex.ViewModel
         public event EventHandler<long> CountRetrieved;
         public event EventHandler<BatchRetrievedEventArgs<PersonaViewModel>> ItemBatchRetrieved;
 
-        public PersonaViewModelProvider(
-            IPersonaService personaService,
-            uint itemsPerBatch = 1,
-            bool forceSynchronousOperations = false
-            )
+        public PersonaViewModelProvider(IPersonaService personaService, uint itemsPerBatch = 1)
         {
             _personaService             = personaService;
             _cachedCount                = _personaService.GetPersonaCount();
-            _forceSynchronousOperations = forceSynchronousOperations;
 
             _batchCalculator            = new BatchCalculator((uint)_cachedCount, itemsPerBatch);
             _retrievalStatuses          = new Dictionary<Range, BatchStatus>();
@@ -97,18 +91,6 @@ namespace Personadex.ViewModel
             handler(this, new BatchRetrievedEventArgs<PersonaViewModel>(personaIndexItemPairs));
         }
 
-        private void RunTask(Task task)
-        {
-            if (_forceSynchronousOperations)
-            {
-                task.RunSynchronously(TaskScheduler.FromCurrentSynchronizationContext());
-            }
-            else
-            {
-                task.Start(TaskScheduler.FromCurrentSynchronizationContext());
-            }
-        }
-
         private bool CompareExchangeBatchStatus(
             Range indexRange,
             BatchStatus statusToCheckFor,
@@ -131,6 +113,11 @@ namespace Personadex.ViewModel
 
                 return true;
             }
+        }
+
+        private static void RunTask(Task task)
+        {
+            task.Start(TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private enum BatchStatus

@@ -88,12 +88,13 @@
     <Compile Include="Collection\IBatchedItemProvider.cs" />
     <Compile Include="Collection\BatchRetrievedEventArgs.cs" />
     <Compile Include="Collection\ObservableVector.cs" />
+    <Compile Include="Design\DesignerObservableVector.cs" />
+    <Compile Include="Design\DesignerPageNavigator.cs" />
+    <Compile Include="Design\DesignerPersonaService.cs" />
     <Compile Include="Utils\Range.cs" />
     <Compile Include="Model\Arcana.cs" />
-    <Compile Include="Model\DesignerPersonaService.cs" />
     <Compile Include="Model\Persona.cs" />
     <Compile Include="Model\PersonaService.cs" />
-    <Compile Include="Navigation\DesignerPageNavigator.cs" />
     <Compile Include="Navigation\IPageNavigator.cs" />
     <Compile Include="Navigation\PageNavigator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
