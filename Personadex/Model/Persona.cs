@@ -2,6 +2,8 @@
 {
     internal sealed class Persona
     {
+        public uint Id { get; set; }
+
         public string Name { get; set; }
 
         public uint Level { get; set; }

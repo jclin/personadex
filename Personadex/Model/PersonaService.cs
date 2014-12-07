@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using Personadex.Utils;
 using SQLitePCL;
 
 namespace Personadex.Model
@@ -12,6 +13,7 @@ namespace Personadex.Model
 
         private const string SelectAllPersonasQuery =
             "SELECT" + Newline
+                + "Persona._id as " + "Id" + Comma + Newline
                 + "Persona.Name as " + "Name" + Comma + Newline
                 + "Level" + Comma + Newline
                 + "PhysLevel.Name as " + "Physical" + Comma + Newline
@@ -41,9 +43,9 @@ namespace Personadex.Model
                 + "JOIN Arcana" + Newline
                 + "ON Persona.Arcana=Arcana._id";
 
-        private const string SelectPersonaQuery =
+        private const string SelectPersonaRangeQuery =
             SelectAllPersonasQuery + Newline
-                + "WHERE Persona._id = ?";
+                + "WHERE Persona._id >= ? AND Persona._id <= ?";
 
         private const string PersonaCountQuery =
             "SELECT COUNT(*) FROM Persona";
@@ -62,13 +64,16 @@ namespace Personadex.Model
             }
         }
 
-        public IReadOnlyList<Persona> GetPersonas()
+        public IReadOnlyList<Persona> GetPersonas(Range range)
         {
             var personas = new List<Persona>();
 
             using (var connection = OpenDatabaseConnection())
-            using (var statement = connection.Prepare(SelectAllPersonasQuery))
+            using (var statement  = connection.Prepare(SelectPersonaRangeQuery))
             {
+                statement.Bind(1, range.Start + 1);
+                statement.Bind(2, range.End + 1);
+
                 while (statement.Step() == SQLiteResult.ROW)
                 {
                     personas.Add(ToPersona(statement));
@@ -78,24 +83,10 @@ namespace Personadex.Model
             return personas;
         }
 
-        public Persona GetPersona(int personaId)
-        {
-            using (var connection = OpenDatabaseConnection())
-            using (var statement = connection.Prepare(SelectPersonaQuery))
-            {
-                statement.Bind(1, personaId);
-                if (statement.Step() != SQLiteResult.ROW)
-                {
-                    throw new SQLiteException("Couldn't retrieve Persona");
-                }
-
-                return ToPersona(statement);
-            }
-        }
-
         private static SQLiteConnection OpenDatabaseConnection()
         {
-            return new SQLiteConnection(
+            return
+                new SQLiteConnection(
                     Path.Combine(
                         Windows.ApplicationModel.Package.Current.InstalledLocation.Path,
                         DatabaseName
@@ -107,6 +98,7 @@ namespace Personadex.Model
         {
             return new Persona
             {
+                Id          = (uint)(long)statement["Id"],
                 Name        = (string)statement["Name"],
                 Level       = (uint)(long)statement["Level"],
                 Physical    = (string)statement["Physical"],
