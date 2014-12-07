@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using Personadex.Model;
 using Personadex.Utils;
 
-namespace Personadex.Model
+namespace Personadex.Design
 {
     internal sealed class DesignerPersonaService : IPersonaService
     {

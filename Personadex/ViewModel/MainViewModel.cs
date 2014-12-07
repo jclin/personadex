@@ -1,7 +1,6 @@
 using System;
+using Windows.Foundation.Collections;
 using GalaSoft.MvvmLight;
-using Personadex.Collection;
-using Personadex.Model;
 using Personadex.Navigation;
 using Personadex.View;
 
@@ -9,12 +8,10 @@ namespace Personadex.ViewModel
 {
     internal sealed class MainViewModel : ViewModelBase
     {
-        private const int PersonasPerBatch = 50;
-
         private readonly IPageNavigator _pageNavigator;
 
-        private readonly ObservableVector<PersonaViewModel> _personaViewModels;
-        public ObservableVector<PersonaViewModel> PersonaViewModels
+        private readonly IObservableVector<object> _personaViewModels;
+        public IObservableVector<object> PersonaViewModels
         {
             get
             {
@@ -51,11 +48,11 @@ namespace Personadex.ViewModel
             }
         }
 
-        public MainViewModel(IPersonaService personaService, IPageNavigator pageNavigator)
+        public MainViewModel(IObservableVector<object> personaViewModels, IPageNavigator pageNavigator)
         {
+            _personaViewModels         = personaViewModels;
             _pageNavigator             = pageNavigator;
             _pageNavigator.NavigateTo += OnNavigateTo;
-            _personaViewModels         = new ObservableVector<PersonaViewModel>(new PersonaViewModelProvider(personaService, PersonasPerBatch, IsInDesignMode));
         }
 
         private void OnNavigateTo(object sender, Type pageNavigateToType)
