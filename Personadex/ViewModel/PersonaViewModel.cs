@@ -1,5 +1,7 @@
+using System;
 using GalaSoft.MvvmLight;
 using Personadex.Model;
+using Personadex.Utils;
 
 namespace Personadex.ViewModel
 {
@@ -92,6 +94,22 @@ namespace Personadex.ViewModel
             get
             {
                 return _persona.Skills.Trim();
+            }
+        }
+
+        public Uri SmallImageUri
+        {
+            get
+            {
+                return ImageUriBuilder.BuildUri(_persona.Name, ImageSize.Small);
+            }
+        }
+
+        public Uri LargeImageUri
+        {
+            get
+            {
+                return ImageUriBuilder.BuildUri(_persona.Name, ImageSize.Large);
             }
         }
 

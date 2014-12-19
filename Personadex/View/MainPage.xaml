@@ -34,8 +34,13 @@
                     Width="41"
                     Margin="0, 0, 10, 0"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    Fill="OrangeRed" />
+                    VerticalAlignment="Top">
+                    <Rectangle.Fill>
+                        <ImageBrush
+                            ImageSource="{Binding SmallImageUri}"
+                            Stretch="UniformToFill" />
+                    </Rectangle.Fill>
+                </Rectangle>
                 <StackPanel
                     Grid.Column="1"
                     VerticalAlignment="Top"
@@ -75,15 +80,14 @@
                 Text="Personadex" />
 
             <TextBlock
-                TextLineBounds="Tight"
                 Style="{ThemeResource HeaderTextBlockStyle}"
-                Text="Personas" />
+                Text="Personas"
+                TextLineBounds="Tight" />
         </StackPanel>
 
         <ListView
             Grid.Row="1"
             Margin="19, 10, 10, 10"
-            ContainerContentChanging="OnListViewContentContainerChanging"
             ItemContainerStyle="{StaticResource ListViewItemStyle}"
             ItemTemplate="{StaticResource PersonaItemTemplate}"
             ItemsSource="{Binding PersonaViewModels}"
