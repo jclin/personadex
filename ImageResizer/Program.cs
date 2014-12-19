@@ -67,9 +67,14 @@ namespace ImageResizer
 
                         graphics.DrawImage(inputImage, Rectangle.FromLTRB(0, 0, outputImage.Width, outputImage.Height));
 
+                        string outputFileName = Path.GetFileNameWithoutExtension(inputFileName);
+                        outputFileName        = outputFileName.ToLowerInvariant();
+                        outputFileName        = outputFileName.Replace(" ", "");
+                        outputFileName        = string.Concat(outputFileName, "_", outputSize.Item1, "x", outputSize.Item2, ".png");
+
                         string outputFilePath = Path.Combine(
                             outputDirectory,
-                            string.Concat(Path.GetFileNameWithoutExtension(inputFileName), "_", outputSize.Item1, "x", outputSize.Item2, ".png")
+                            outputFileName
                             );
                         outputImage.Save(outputFilePath, ImageFormat.Png);
 
