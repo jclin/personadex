@@ -6,20 +6,26 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using Personadex.Suspension;
+using Personadex.View;
+using Personadex.ViewModel;
 
 namespace Personadex
 {
     public sealed partial class App
     {
+        private readonly SuspensionTracker _suspensionTracker;
         private TransitionCollection _transitions;
 
         public App()
         {
             InitializeComponent();
             Suspending += OnSuspending;
+
+            _suspensionTracker = new SuspensionTracker(new JsonAppState());
         }
 
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
             if (Debugger.IsAttached)
@@ -27,18 +33,22 @@ namespace Personadex
                 DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
-
             var rootFrame = Window.Current.Content as Frame;
             if (rootFrame == null)
             {
-                rootFrame = new Frame { CacheSize = 10 };
-
-                if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
-                {
-                    // TODO: Load state from previously suspended application
-                }
+                rootFrame = new Frame { CacheSize = 2 };
 
                 Window.Current.Content = rootFrame;
+
+                _suspensionTracker.TrackState(rootFrame);
+                _suspensionTracker.TrackState<MainPage>(((ViewModelLocator)Resources["ViewModelLocator"]).MainViewModel);
+
+                if (e.PreviousExecutionState == ApplicationExecutionState.Terminated &&
+                    _suspensionTracker.LastUtcWriteTime.HasValue &&
+                    DateTime.UtcNow.Subtract(_suspensionTracker.LastUtcWriteTime.Value).TotalMinutes <= 10d)
+                {
+                    await _suspensionTracker.RestoreStateAsync(typeof(MainPage));
+                }
             }
 
             if (rootFrame.Content == null)
@@ -74,11 +84,12 @@ namespace Personadex
             rootFrame.ContentTransitions = _transitions ?? new TransitionCollection {new NavigationThemeTransition()};
         }
 
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
-            SuspendingDeferral deferral = e.SuspendingOperation.GetDeferral();
+            var deferral = e.SuspendingOperation.GetDeferral();
 
-            // TODO: Save application state and stop any background activity
+            await _suspensionTracker.SaveStateAsync();
+
             deferral.Complete();
         }
     }

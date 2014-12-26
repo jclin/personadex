@@ -43,7 +43,7 @@ namespace Personadex.Navigation
 
         private void OnHardwareButtonsBackPressed(object sender, BackPressedEventArgs e)
         {
-            if (!_goBackOnBackPress || !Frame.CanGoBack)
+            if (/*!_goBackOnBackPress ||*/ !Frame.CanGoBack)
             {
                 return;
             }

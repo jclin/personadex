@@ -4,6 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:utils="using:Personadex.Utils"
+    xmlns:controls="using:Personadex.Controls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     DataContext="{Binding
         MainViewModel,
@@ -85,17 +87,24 @@
                 TextLineBounds="Tight" />
         </StackPanel>
 
-        <ListView
+        <controls:ScrollOffsetTracker
             Grid.Row="1"
+            HorizontalContentAlignment="Stretch"
             Margin="19, 10, 10, 10"
-            ItemContainerStyle="{StaticResource ListViewItemStyle}"
-            ItemTemplate="{StaticResource PersonaItemTemplate}"
-            ItemsSource="{Binding PersonaViewModels}"
-            SelectedItem="{Binding
-                SelectedPersonaViewModel,
-                Mode=TwoWay}"
-            SelectionMode="Single"
-            ShowsScrollingPlaceholders="True" />
+            VerticalOffset="{Binding
+                VerticalOffset,
+                Mode=TwoWay}">
+            <ListView
+                x:Name="ListView"
+                ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                ItemTemplate="{StaticResource PersonaItemTemplate}"
+                ItemsSource="{Binding PersonaViewModels}"
+                SelectedItem="{Binding
+                    SelectedPersonaViewModel,
+                    Mode=TwoWay}"
+                SelectionMode="Single"
+                ShowsScrollingPlaceholders="True" />
+        </controls:ScrollOffsetTracker>
 
     </Grid>
 </Page>

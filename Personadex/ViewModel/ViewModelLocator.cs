@@ -27,7 +27,7 @@ namespace Personadex.ViewModel
             {
                 SimpleIoc.Default.Register<IPageNavigator, PageNavigator>();
                 SimpleIoc.Default.Register<IBatchedItemProvider<PersonaViewModel>>(() => new PersonaViewModelProvider(new PersonaService(), PersonasPerBatch));
-                SimpleIoc.Default.Register<IObservableVector<object>, ObservableVector<PersonaViewModel>>();
+                SimpleIoc.Default.Register<IVirtualizingVector<PersonaViewModel>, PersonaViewModelVector>();
             }
 
             SimpleIoc.Default.Register<MainViewModel>();
