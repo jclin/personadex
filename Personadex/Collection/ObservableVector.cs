@@ -3,13 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using Windows.Foundation.Collections;
 using GalaSoft.MvvmLight;
+using Newtonsoft.Json.Linq;
+using Personadex.Suspension;
 
 namespace Personadex.Collection
 {
-    internal sealed class ObservableVector<T> : ObservableObject, IObservableVector<object>, INotifyCollectionChanged
+    internal class ObservableVector<T> : ObservableObject, IObservableVector<object>, INotifyCollectionChanged, IJsonSerializable
         where T : class
     {
         public event VectorChangedEventHandler<object> VectorChanged;
@@ -81,6 +84,14 @@ namespace Personadex.Collection
             }
         }
 
+        protected virtual string JsonName
+        {
+            get
+            {
+                return string.Format("ObservableVectorOf{0}", typeof(T).Name);
+            }
+        }
+
         public ObservableVector(IBatchedItemProvider<T> vectorItemProvider)
         {
             _itemProvider                    = vectorItemProvider;
@@ -142,7 +153,8 @@ namespace Personadex.Collection
             {
                 foreach (var key in _internalDictionary.Keys)
                 {
-                    if (ReferenceEquals(_internalDictionary[key], item))
+                    if (ReferenceEquals(_internalDictionary[key], item) ||
+                        Equals(_internalDictionary[key], item))
                     {
                         return key;
                     }
@@ -160,6 +172,16 @@ namespace Personadex.Collection
         public void RemoveAt(int index)
         {
             throw new InvalidOperationException(NotMutableExceptionMessage);
+        }
+
+        protected virtual JToken WriteItem(T item)
+        {
+            return null;
+        }
+
+        protected virtual T ReadItem(JToken jsonToken)
+        {
+            return null;
         }
 
         private void NotifyVectorChanged(VectorChangedEventArgs args)
@@ -215,6 +237,68 @@ namespace Personadex.Collection
             }
 
             Debug.Assert(item is T, string.Format("Error: expected an instance of {0}", typeof(T)));
+        }
+
+        string IJsonSerializable.Name
+        {
+            get
+            {
+                return JsonName;
+            }
+        }
+
+        JToken IJsonSerializable.Write()
+        {
+            var jsonObject = new JObject();
+
+            jsonObject.Add("Count", _count);
+
+            var jsonArray = new JArray();
+            
+            lock (_dictionaryLock)
+            {
+                foreach (var key in _internalDictionary.Keys)
+                {
+                    var itemToken = WriteItem(_internalDictionary[key]);
+                    if (itemToken == null)
+                    {
+                        continue;
+                    }
+
+                    jsonArray.Add(
+                        new JObject(
+                            new JProperty("Index", key.ToString(CultureInfo.InvariantCulture)),
+                            new JProperty("Item", itemToken)
+                        )
+                    );
+                }
+            }
+
+            jsonObject.Add("Items", jsonArray);
+
+            return jsonObject;
+        }
+
+        void IJsonSerializable.Read(JToken value)
+        {
+            _count = value["Count"].ToObject<int>();
+
+            var jsonArray = (JArray)value["Items"];
+            lock (_dictionaryLock)
+            {
+                foreach (var jsonObject in jsonArray)
+                {
+                    var index = jsonObject["Index"].ToObject<int>();
+                    T item    = ReadItem(jsonObject["Item"]);
+
+                    if (item  == default(T))
+                    {
+                        continue;
+                    }
+
+                    _internalDictionary[index] = item;
+                }
+            }
         }
 
         #region VectorChangedEventArgs class

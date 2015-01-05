@@ -35,11 +35,14 @@ namespace Personadex.Utils
 
         public override int GetHashCode()
         {
-            int hashCode = base.GetHashCode();
-            hashCode     = hashCode * 23 + _start.GetHashCode();
-            hashCode     = hashCode * 23 + _end.GetHashCode();
+            unchecked
+            {
+                int hashCode = base.GetHashCode();
+                hashCode = hashCode * 23 + _start.GetHashCode();
+                hashCode = hashCode * 23 + _end.GetHashCode();
 
-            return hashCode;
+                return hashCode;
+            }
         }
 
         public override string ToString()

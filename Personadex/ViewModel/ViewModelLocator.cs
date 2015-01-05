@@ -1,4 +1,3 @@
-using Windows.Foundation.Collections;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
@@ -21,13 +20,13 @@ namespace Personadex.ViewModel
             {
                 SimpleIoc.Default.Register<IPageNavigator, DesignerPageNavigator>();
                 SimpleIoc.Default.Register<IPersonaService, DesignerPersonaService>();
-                SimpleIoc.Default.Register<IObservableVector<object>, DesignerObservableVector>();
+                SimpleIoc.Default.Register<IVirtualizingVector<PersonaViewModel>, DesignerObservableVector>();
             }
             else
             {
                 SimpleIoc.Default.Register<IPageNavigator, PageNavigator>();
                 SimpleIoc.Default.Register<IBatchedItemProvider<PersonaViewModel>>(() => new PersonaViewModelProvider(new PersonaService(), PersonasPerBatch));
-                SimpleIoc.Default.Register<IObservableVector<object>, ObservableVector<PersonaViewModel>>();
+                SimpleIoc.Default.Register<IVirtualizingVector<PersonaViewModel>, PersonaViewModelVector>();
             }
 
             SimpleIoc.Default.Register<MainViewModel>();

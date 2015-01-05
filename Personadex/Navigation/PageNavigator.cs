@@ -6,8 +6,6 @@ namespace Personadex.Navigation
 {
     internal sealed class PageNavigator : IPageNavigator
     {
-        private bool _goBackOnBackPress;
-
         public event NavigateToDelegate NavigateTo;
 
         private static Frame Frame
@@ -24,15 +22,13 @@ namespace Personadex.Navigation
             HardwareButtons.BackPressed += OnHardwareButtonsBackPressed;
         }
 
-        public bool Navigate<TPage>(bool goBackOnBackPress = false) where TPage : Page
+        public bool Navigate<TPage>() where TPage : Page
         {
-            return Navigate<TPage>(null, goBackOnBackPress);
+            return Navigate<TPage>(null);
         }
 
-        public bool Navigate<TPage>(object parameter, bool goBackOnBackPress = false) where TPage : Page
+        public bool Navigate<TPage>(object parameter) where TPage : Page
         {
-            _goBackOnBackPress = goBackOnBackPress;
-
             return Frame.Navigate(typeof (TPage), parameter);
         }
 
@@ -43,7 +39,7 @@ namespace Personadex.Navigation
 
         private void OnHardwareButtonsBackPressed(object sender, BackPressedEventArgs e)
         {
-            if (!_goBackOnBackPress || !Frame.CanGoBack)
+            if (!Frame.CanGoBack)
             {
                 return;
             }
