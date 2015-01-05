@@ -90,12 +90,12 @@
         <controls:ScrollOffsetTracker
             Grid.Row="1"
             HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
             Margin="19, 10, 10, 10"
             VerticalOffset="{Binding
                 VerticalOffset,
                 Mode=TwoWay}">
             <ListView
-                x:Name="ListView"
                 ItemContainerStyle="{StaticResource ListViewItemStyle}"
                 ItemTemplate="{StaticResource PersonaItemTemplate}"
                 ItemsSource="{Binding PersonaViewModels}"

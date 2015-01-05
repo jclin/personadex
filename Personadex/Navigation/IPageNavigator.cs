@@ -9,9 +9,9 @@ namespace Personadex.Navigation
     {
         event NavigateToDelegate NavigateTo;
 
-        bool Navigate<TPage>(bool goBackOnBackPress = false) where TPage : Page;
+        bool Navigate<TPage>() where TPage : Page;
 
-        bool Navigate<TPage>(object parameter, bool goBackBackPress = false) where TPage : Page;
+        bool Navigate<TPage>(object parameter) where TPage : Page;
         
         void GoBack();
     }

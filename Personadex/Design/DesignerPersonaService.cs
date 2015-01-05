@@ -56,7 +56,7 @@ namespace Personadex.Design
 
                 new Persona
                 {
-                    Name        = "Kahaku (AKA Hua Po)",
+                    Name        = "Hua Po",
                     Level       = 25,
                     Physical    = string.Empty,
                     Fire        = "Nul",

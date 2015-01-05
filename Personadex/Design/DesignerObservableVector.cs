@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Foundation.Collections;
+using Newtonsoft.Json.Linq;
+using Personadex.Collection;
 using Personadex.Model;
+using Personadex.Suspension;
 using Personadex.Utils;
 using Personadex.ViewModel;
 
 namespace Personadex.Design
 {
-    internal sealed class DesignerObservableVector : IObservableVector<object>
+    internal sealed class DesignerObservableVector : IVirtualizingVector<PersonaViewModel>
     {
         private readonly List<PersonaViewModel> _internalList;
         private readonly IPersonaService _personaService;
@@ -97,5 +100,21 @@ namespace Personadex.Design
         {
         }
 
+        string IJsonSerializable.Name
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+        }
+
+        JToken IJsonSerializable.Write()
+        {
+            return new JObject();
+        }
+
+        void IJsonSerializable.Read(JToken value)
+        {
+        }
     }
 }
